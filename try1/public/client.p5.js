@@ -35,7 +35,7 @@ message.addEventListener("keyup", function(event) {
 // listen server data
 
 socket.on('history', function(history_html_string) {
-  output.innerHTML = history_html_string + output.innerHTML;
+  output.innerHTML = history_html_string;
   scroll_to_bottom(chat_window);
 });
 
