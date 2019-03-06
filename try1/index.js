@@ -46,7 +46,7 @@ io.on('connection', function(socket) {
 
   socket.on('chat', function(data) {
 
-    new_message_string = '<p><strong>' + data.myname + ': </strong>' +
+    var new_message_string = '<p><strong>' + data.myname + ': </strong>' +
       data.message + ' <font color="grey"><small>(' +
       date_time_string() + ')</small></font></p>';
 
