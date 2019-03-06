@@ -4,6 +4,8 @@ var express = require("express");
 var socket = require('socket.io');
 var path = require("path");
 var history = []; // chat history
+var Badword_Filter = require('bad-words'),
+  word_filter = new Badword_Filter();
 // app setup
 var app = express();
 // var server = app.listen(4000, function() {
@@ -46,8 +48,9 @@ io.on('connection', function(socket) {
 
   socket.on('chat', function(data) {
 
-    var new_message_string = '<p><strong>' + data.myname + ': </strong>' +
-      data.message + ' <font color="grey"><small>(' +
+    var new_message_string = '<p><strong>' +
+      word_filter.clean(data.myname) + ': </strong>' +
+      word_filter.clean(data.message) + ' <font color="grey"><small>(' +
       date_time_string() + ')</small></font></p>';
 
     io.sockets.emit('chat', new_message_string);
@@ -75,7 +78,7 @@ var date_time_string = function() {
     currentdate.getFullYear() + "@" +
     currentdate.getHours() + ":" +
     currentdate.getMinutes() + "ET";
-    // currentdate.getSeconds();
+  // currentdate.getSeconds();
 };
 
 // chat history handling
