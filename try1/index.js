@@ -1,16 +1,40 @@
+'use strict';
+
 var express = require("express");
 var socket = require('socket.io');
+var path = require("path");
 var history = []; // chat history
-
 // app setup
 var app = express();
-var server = app.listen(4000, function() {
-  console.log("listen at port 4000");
-});
+// var server = app.listen(4000, function() {
+//   console.log("listen at port 4000");
+// });
+var server=require('http').Server(app);
 
 // app stactic entry point
 
-app.use(express.static('public'));
+// app.use(express.static('public'));
+// app.set('views', __dirname + '/public');
+app.set('view engine', 'html');
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/public/'));
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+//
+// app.get('/', function(req, res){
+//     res.render('home');
+// });
+
+if (module === require.main) {
+  const PORT = process.env.PORT || 8080;
+  server.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}`);
+    console.log('Press Ctrl+C to quit.');
+  });
+}
 
 // Socket setup
 var io = socket(server);
@@ -62,6 +86,7 @@ function add_history(new_string) {
 
 function read_history(num_of_lines) {
   var start_index = Math.max(history.length - num_of_lines, 0);
+  var sub_history;
   console.log("read history", "start_index=", start_index, "length", history.length);
   sub_history = history.slice(start_index, history.length);
   //console.log(sub_history.toString());
