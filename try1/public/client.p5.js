@@ -20,7 +20,7 @@ send.addEventListener('click', function() {
   message.value = "";
 });
 // Detect the ENTER key pressed inside the message input box
-message.addEventListener("keyup", function(event) {
+message.addEventListener("keypress", function(event) {
   // Number 13 is the "Enter" key on the keyboard
   if (event.keyCode === 13) {
     // Cancel the default action, if needed
