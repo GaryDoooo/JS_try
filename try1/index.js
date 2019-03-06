@@ -9,7 +9,7 @@ var app = express();
 // var server = app.listen(4000, function() {
 //   console.log("listen at port 4000");
 // });
-var server=require('http').Server(app);
+var server = require('http').Server(app);
 
 // app stactic entry point
 
@@ -18,7 +18,7 @@ var server=require('http').Server(app);
 app.set('view engine', 'html');
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname + '/public/'));
+  res.sendFile(path.join(__dirname + '/public/'));
 });
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -63,16 +63,19 @@ io.on('connection', function(socket) {
 
 // Generate current datetime string
 var date_time_string = function() {
-  var currentdate = new Date();
+  var usaTime = new Date().toLocaleString("en-US", {
+    timeZone: "America/New_York"
+  });
+  var currentdate = new Date(usaTime);
   var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
   ];
   return currentdate.getDate() + "/" +
     month[currentdate.getMonth()] + "/" +
-    currentdate.getFullYear() + " @ " +
+    currentdate.getFullYear() + "@" +
     currentdate.getHours() + ":" +
-    currentdate.getMinutes() + ":" +
-    currentdate.getSeconds();
+    currentdate.getMinutes() + "ET";
+    // currentdate.getSeconds();
 };
 
 // chat history handling
