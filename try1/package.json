@@ -20,11 +20,6 @@
     "nodemon": "^1.18.10"
   },
   "cloud-repo-tools": {
-    "test": {
-      "app": {
-        "msg": "messages"
-      }
-    },
     "requiresKeyFile": true,
     "requiresProjectId": true
   }
