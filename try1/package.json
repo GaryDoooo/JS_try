@@ -9,7 +9,7 @@
   },
   "scripts": {
     "deploy": "gcloud app deploy",
-    "start": "node app.js",
+    "start": "node ./index.js",
     "lint": "samples lint",
     "pretest": "npm run lint",
     "test": "node app.js & ava -T 30s test/*.js; killall node",
