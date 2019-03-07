@@ -13,11 +13,16 @@ var message = document.getElementById('message'),
 // Emit events
 // Detect the click event on send key
 send.addEventListener('click', function() {
+  if (message.value === "" | myname.value === ""){
+      feedback_timeout=0;
+      feedback.innerHTML="<p> Either Name or Message is missing...</p>";
+  }else{
   socket.emit('chat', {
     message: message.value,
     myname: myname.value
   });
   message.value = "";
+  }
 });
 // Detect the ENTER key pressed inside the message input box
 message.addEventListener("keypress", function(event) {
