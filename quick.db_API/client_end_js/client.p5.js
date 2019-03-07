@@ -1,57 +1,78 @@
-// Make connection socket
-var socket = io.connect('http://127.0.0.1:8080');
-//var socket = io();
 var feedback_timeout = 0;
 
-var message = document.getElementById('message'),
+var input1 = document.getElementById('message'),
+  input2 = document.getElementById('message2'),
   output = document.getElementById('output'),
   send = document.getElementById('send'),
-  myname = document.getElementById('myname'),
+  cmd = document.getElementById('myname'),
   feedback = document.getElementById('feedback'),
   chat_window = document.getElementById('chat-window');
 
 // Emit events
 // Detect the click event on send key
 send.addEventListener('click', function() {
-  socket.emit('chat', {
-    message: message.value,
-    myname: myname.value
+  //var result;
+  db_api(cmd.value,input1.value,input2.value,function(result){
+    console.log("client js", result);
+    output_result(result);
   });
-  message.value = "";
+  // switch (cmd.value) {
+  //   case "set":
+  //     db_set(input1.value, input2.value, function(result) {
+  //       console.log("client js", result);
+  //       output_result(result);
+  //     });
+  //     break;
+  //   case "get":
+  //     result = db_get(input1.value, function(result) {
+  //       output_result(result);
+  //     });
+  //     break;
+  //   default:
+  //     feedback_timeout = 0;
+  //     feedback.innerHTML = "<p>Unsupported Command...</p>";
+  // }
 });
 // Detect the ENTER key pressed inside the message input box
-message.addEventListener("keypress", function(event) {
+input1.addEventListener("keypress", function(event) {
   // Number 13 is the "Enter" key on the keyboard
   if (event.keyCode === 13) {
     // Cancel the default action, if needed
     event.preventDefault();
     // Trigger the button element with a click
     send.click();
-  } else {
-    socket.emit('typing', myname.value);
+  }
+});
+// Detect the ENTER key pressed inside the message input box
+input2.addEventListener("keypress", function(event) {
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    send.click();
   }
 });
 
-// listen server data
-
-socket.on('history', function(history_html_string) {
-  output.innerHTML = history_html_string;
-  scroll_to_bottom(chat_window);
+cmd.addEventListener("keypress", function(event) {
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    send.click();
+  }
 });
-
-socket.on('chat', function(message_html_string) {
-  feedback.innerHTML = '';
-  output.innerHTML += message_html_string;
-  scroll_to_bottom(chat_window);
-});
-
-socket.on('typing', function(name_value) {
-  feedback.innerHTML = '<p>' + name_value + ' is typing...</p>';
-  feedback_timeout = 0;
-  scroll_to_bottom(chat_window);
-});
-
 // General functions
+function output_result(result) {
+  if (result === false) {
+    output.innerHTML += "<p>Command failed. </p>";
+  } else {
+    output.innerHTML += "<p>" + result.toString() + "</p>";
+  }
+  scroll_to_bottom(chat_window);
+}
+
 function setup() {
   frameRate(10);
 }

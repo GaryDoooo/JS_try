@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Chat Room (or bulletin board.)</title>
+  <title>Quick.db interface</title>
   <script src="libs/socket.io.js"></script>
   <link href="chatroom.css" rel="stylesheet" />
 </head>
@@ -11,19 +11,21 @@
 <body>
 
   <div id="chat">
-    <h2>Chat Room (History will be shown.)</h2>
+    <h2>Remote Quick.db interface (open JS console)</h2>
     <div id="chat-window">
       <div id="output">
       </div>
       <div id="feedback"></div>
     </div>
-    <input id="myname" type="text" placeholder="Name" />
-    <input id="message" type="text" placeholder="Message" />
+    <input id="myname" type="text" placeholder="Command: set push add get delete has all subtract startwith" />
+    <input id="message" type="text" placeholder="input 1" />
+    <input id="message2" type="text" placeholder="input 2" />
     <button id="send">Send</button>
   </div>
 
   <!-- <script src="/client.js"></script> -->
   <script src="libs/p5.js"></script>
+  <script src="libs/gdu_db_api.js"></script>
   <script src="client.p5.js"></script>
 </body>
 
