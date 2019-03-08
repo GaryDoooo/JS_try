@@ -1,7 +1,7 @@
 {
-  "name": "try1",
-  "version": "1.0.0",
-  "description": "",
+  "name": "Chatroom",
+  "version": "2.0.0",
+  "description": "Chatroom to add user, password and db history.",
   "main": "index.js",
   "start": "index.js",
   "engines": {
@@ -23,7 +23,8 @@
     "html": "^1.0.0",
     "http": "0.0.0",
     "path": "^0.12.7",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"

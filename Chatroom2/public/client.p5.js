@@ -1,5 +1,8 @@
 // Make connection socket
-// var socket = io.connect('http://127.0.0.1:4000');
+
+const key = client_random_key_gen(); // get the unique random key for this session
+console.log("client key: ",key);
+
 var socket = io();
 var feedback_timeout = 0;
 
@@ -38,6 +41,11 @@ message.addEventListener("keypress", function(event) {
 });
 
 // listen server data
+
+socket.on('connect',function(){
+  console.log("received connection event and send key.");
+  socket.emit('sendkey',key);
+});
 
 socket.on('history', function(history_html_string) {
   output.innerHTML = history_html_string;
