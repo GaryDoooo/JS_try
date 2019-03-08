@@ -27,12 +27,14 @@ if (module === require.main) {
   });
 }
 ///////// Test the DB has the chatroom entry, if not then create one
-db_api("has","chatroom2","",function(result){
-  console.log("check the chatroom2 with has to db, feedback:",result);
-  if (result===false){
+db_api("has", "chatroom2", "", function(result) {
+  console.log("check the chatroom2 with has to db, feedback:", result);
+  if (result === false) {
     console.log("no entry existing try to set a new one.");
-    db_api("set","chatroom2",{history:['<p>BIG BANG</p>']},function(set_result){
-      console.log("set new chatroom2 entry feedback:",set_result);
+    db_api("set", "chatroom2", {
+      history: ['<p>BIG BANG</p>']
+    }, function(set_result) {
+      console.log("set new chatroom2 entry feedback:", set_result);
     });
   }
 });
@@ -50,19 +52,24 @@ function db_api(command, input1, input2, cb_function) {
 }
 
 ///////// server events for chat server
-var keychain;
+var keychain = [];
 
 server_io.on('connection', function(socket) {
   console.log(`made socket connection ${socket.id}`, socket.id);
-  // send back existing history
-  read_history(50,function(result) {
-    socket.emit('history',result);
-    console.log("history sent to new client.",socket.id);
-  });
 
-socket.on('sendkey',function(key) {
-  console.log("got a key: ",key);
-});
+  socket.on('sendkey', function(key) {
+    console.log("got a key: ", key);
+    if (keychain.includes(key)) {
+      console.log("the received key", key, "already in keychain.");
+    } else {
+      keychain.push(key);
+      // send back existing history
+      read_history(50, function(result) {
+        socket.emit('history', result);
+        console.log("history sent to new client.", socket.id,"w/key",key);
+      });
+    }
+  });
 
   socket.on('chat', function(data) {
 
@@ -101,22 +108,22 @@ var date_time_string = function() {
 
 ///////// chat history handling
 function add_history(new_string) {
-  db_api("push","chatroom2.history",new_string,function(result){
-    console.log("history recorded:",result);
+  db_api("push", "chatroom2.history", new_string, function(result) {
+    console.log("history recorded:", result);
   });
 }
 
-function read_history(num_of_lines,cb_function) {
-  db_api("get","chatroom2.history","",function(history){
+function read_history(num_of_lines, cb_function) {
+  db_api("get", "chatroom2.history", "", function(history) {
     var start_index = Math.max(history.length - num_of_lines, 0);
     var sub_history;
     console.log("read history", "start_index=", start_index, "length", history.length);
     sub_history = history.slice(start_index, history.length);
     cb_function(sub_history.join(""));
     ////// trim the history if it's too long >100
-    if (history.length > 100){
-      db_api("set","chatroom2.history",sub_history,function(result){
-        console.log("history is > 100, trim it to 50, feedback:",result);
+    if (history.length > 100) {
+      db_api("set", "chatroom2.history", sub_history, function(result) {
+        console.log("history is > 100, trim it to 50, feedback:", result);
       });
     }
   });
