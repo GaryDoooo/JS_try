@@ -128,3 +128,10 @@ function read_history(num_of_lines, cb_function) {
     }
   });
 }
+
+////// Timeout connection handling
+function intervalFunc() {
+  console.log('Cant stop me now!');
+}
+
+setInterval(intervalFunc, 1500);
