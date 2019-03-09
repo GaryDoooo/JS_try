@@ -82,6 +82,9 @@ server_io.on('connection', function(socket) {
     if (found_key(key) !== false) {
       console.log("new connect key", key, "already in keychain.", socket.id);
     } else {
+      if(!username){
+        username="TBD";
+      }
       keychain.push({
         key: key,
         timer: 0,

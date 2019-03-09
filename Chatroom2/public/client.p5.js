@@ -94,7 +94,7 @@ function intervalFunc() {
   });
   if (++feedback_timeout > 5) {
     feedback.innerHTML = '';
-    scroll_to_bottom(chat_window);
+    //scroll_to_bottom(chat_window);
     feedback_timeout = 0;
   }
   if (++connection_timeout > 30){
