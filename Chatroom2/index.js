@@ -11,7 +11,8 @@ const socket = require('socket.io'), // socket for serving the chat service
   word_filter = new Badword_Filter(),
   app = express(),
   server = require('http').Server(app),
-  server_io = socket(server); // the io for chat server
+  server_io = socket(server), // the io for chat server
+  db_entry="chatroomdev2";
 
 /////// set the http listen and httpd working directory
 app.set('view engine', 'html')
@@ -27,14 +28,14 @@ if (module === require.main) {
   });
 }
 ///////// Test the DB has the chatroom entry, if not then create one
-db_api("has", "chatroom2", "", function(result) {
-  console.log("check the chatroom2 with has to db, feedback:", result);
+db_api("has", db_entry, "", function(result) {
+  console.log("check the db_entry with has to db, feedback:", result);
   if (result === false) {
     console.log("no entry existing try to set a new one.");
-    db_api("set", "chatroom2", {
+    db_api("set", db_entry, {
       history: ['<p>BIG BANG</p>']
     }, function(set_result) {
-      console.log("set new chatroom2 entry feedback:", set_result);
+      console.log("set new db_entry entry feedback:", set_result);
     });
   }
 });
@@ -131,13 +132,13 @@ var date_time_string = function() {
 
 ///////// chat history handling
 function add_history(new_string) {
-  db_api("push", "chatroom2.history", new_string, function(result) {
+  db_api("push", db_entry+".history", new_string, function(result) {
     console.log("history recorded:", result);
   });
 }
 
 function read_history(num_of_lines, cb_function) {
-  db_api("get", "chatroom2.history", "", function(history) {
+  db_api("get",  db_entry+".history", "", function(history) {
     var start_index = Math.max(history.length - num_of_lines, 0);
     var sub_history;
     console.log("read history", "start_index=", start_index, "length", history.length);
@@ -145,7 +146,7 @@ function read_history(num_of_lines, cb_function) {
     cb_function(sub_history.join(""));
     ////// trim the history if it's too long >100
     if (history.length > 100) {
-      db_api("set", "chatroom2.history", sub_history, function(result) {
+      db_api("set",  db_entry+".history", sub_history, function(result) {
         console.log("history is > 100, trim it to 50, feedback:", result);
       });
     }
@@ -161,7 +162,7 @@ function intervalFunc() {
       delete keychain[i];
     }
   }
-  console.log("current keychain", keychain);
+  //console.log("current keychain", keychain);
 }
 
 setInterval(intervalFunc, 5000);
