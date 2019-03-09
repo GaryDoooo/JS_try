@@ -66,7 +66,7 @@ socket.on('typing', function(name_value) {
 
 // General functions
 function setup() {
-  frameRate(10);
+  frameRate(5);
 }
 
 function scroll_to_bottom(element) {
@@ -74,10 +74,17 @@ function scroll_to_bottom(element) {
 }
 
 function draw() {
-  // timeout feedback message
-  if (++feedback_timeout > 50) {
+  // DRAW function is only called when it's in the front, by each frame
+}
+////// Timeout connection handling
+///// setInterval function runs at the background too.
+function intervalFunc() {
+  socket.emit("time_out_check",key);
+  if (++feedback_timeout > 5) {
     feedback.innerHTML = '';
     scroll_to_bottom(chat_window);
     feedback_timeout = 0;
   }
 }
+
+setInterval(intervalFunc, 1000);

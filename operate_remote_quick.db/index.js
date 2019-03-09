@@ -20,7 +20,7 @@ app.set('view engine', 'html')
   })
   .use(express.static(path.join(__dirname, 'public')));
 if (module === require.main) {
-  const PORT = process.env.PORT || 8080;
+  const PORT = process.env.PORT || 8000;
   server.listen(PORT, () => {
     console.log(`App listening on port ${PORT}`);
     console.log('Press Ctrl+C to quit.');
@@ -53,30 +53,20 @@ function db_api(command, input1, input2, cb_function) {
 
 ///////// server events for chat server
 var keychain = [];
-
-function found_key(key) {
-  var i;
-  for (i in keychain) {
-    if (keychain[i].key === key) {
-      return i;
-    }
-  }
-  return false;
-}
+// var connection_list;
 
 server_io.on('connection', function(socket) {
   console.log(`made socket connection ${socket.id}`, socket.id);
 
   socket.on('sendkey', function(key) {
     console.log("got a key: ", key);
-    if (found_key(key) !== false) {
-      console.log("new connect key", key, "already in keychain.", socket.id);
+    if (keychain.includes(key)) {
+      console.log("the received key", key, "already in keychain.");
     } else {
       keychain.push({
-        key: key,
+        key:key,
         timer: 0,
-        name: "TBD",
-        id:socket.id
+        name: "TBD"
       }); // init the new connect Object
       // send back existing history
       read_history(50, function(result) {
@@ -102,13 +92,6 @@ server_io.on('connection', function(socket) {
     socket.broadcast.emit('typing', name_value);
   });
 
-  socket.on('time_out_check', function(key) {
-    try {
-      keychain[found_key(key)].timer = 0;
-    } catch (err) {
-      console.log("got timerout check with UNfound key", key);
-    }
-  });
 });
 
 
@@ -156,12 +139,12 @@ function read_history(num_of_lines, cb_function) {
 function intervalFunc() {
   var i;
   for (i in keychain) {
-    if (++keychain[i].timer === 60) { // timer 6x5s=30s timeout connection
+    if (++keychain[i].timer > 6) { // timer 6x5s=30s timeout connection
       console.log("drop out key:", keychain[i].key);
+      console.log("current keychain",keychain);
       delete keychain[i];
     }
   }
-  console.log("current keychain", keychain);
 }
 
 setInterval(intervalFunc, 5000);
