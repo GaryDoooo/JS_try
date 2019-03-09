@@ -7,14 +7,13 @@ html, body {
 
 h2 {
   font-size: 18px;
-  padding: 0px 0px;
+  padding: 10px 20px;
   color: #575ed8;
-  text-align:center;
 }
 
 #chat {
   max-width: 600px;
-  margin: 10px auto;
+  margin: 30px auto;
   border: 1px solid #ddd;
   box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.05);
   border-radius: 2px;
@@ -34,13 +33,6 @@ h2 {
 }
 
 #feedback p {
-  color: #aaa;
-  padding: 0px 0px;
-  margin: 0 0px;
-  text-align:center;
-}
-
-#userlist p {
   color: #aaa;
   padding: 14px 0px;
   margin: 0 20px;

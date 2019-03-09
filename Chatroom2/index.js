@@ -12,7 +12,7 @@ const socket = require('socket.io'), // socket for serving the chat service
   app = express(),
   server = require('http').Server(app),
   server_io = socket(server), // the io for chat server
-  db_entry="chatroomdev2";
+  db_entry = "chatroomdev2";
 
 /////// set the http listen and httpd working directory
 app.set('view engine', 'html')
@@ -65,52 +65,81 @@ function found_key(key) {
   return false;
 }
 
+function found_id(id) {
+  var i;
+  for (i in keychain) {
+    if (keychain[i].id === id) {
+      return i;
+    }
+  }
+}
+
 server_io.on('connection', function(socket) {
   console.log(`made socket connection ${socket.id}`, socket.id);
 
-  socket.on('sendkey', function(key) {
-    console.log("got a key: ", key);
+  socket.on('sendkey', function(key, username) {
+    console.log("got a key: ", key, "username", username);
     if (found_key(key) !== false) {
       console.log("new connect key", key, "already in keychain.", socket.id);
     } else {
       keychain.push({
         key: key,
         timer: 0,
-        name: "TBD",
-        id:socket.id
+        name: word_filter.clean(username),
+        id: socket.id
       }); // init the new connect Object
       // send back existing history
       read_history(50, function(result) {
         socket.emit('history', result);
         console.log("history sent to new client.", socket.id, "w/key", key);
       });
+      socket.emit('userlist', userlist_html());
     }
   });
 
-  socket.on('chat', function(data) {
+  socket.on('chat', function(key, message) {
+    try {
+      var new_message_string = '<p><strong>' +
+        keychain[found_key(key)].name + ': </strong>' +
+        word_filter.clean(message) + ' <font color="grey"><small>(' +
+        date_time_string() + ')</small></font></p>';
 
-    var new_message_string = '<p><strong>' +
-      word_filter.clean(data.myname) + ': </strong>' +
-      word_filter.clean(data.message) + ' <font color="grey"><small>(' +
-      date_time_string() + ')</small></font></p>';
-
-    server_io.sockets.emit('chat', new_message_string);
-    add_history(new_message_string);
-    //console.log(new_message_string);
+      server_io.sockets.emit('chat', new_message_string);
+      add_history(new_message_string);
+    } catch (err) {
+      console.log("on chat event", err, "key", key);
+    }
   });
 
-  socket.on('typing', function(name_value) {
-    socket.broadcast.emit('typing', name_value);
+  socket.on('typing', function(key) {
+    try {
+      socket.broadcast.emit('typing', keychain[found_key(key)].name + " is typing...");
+    } catch (err) {
+      console.log("on typing event", err, "key", key);
+    }
   });
 
-  socket.on('time_out_check', function(key) {
+  socket.on('time_out_check', function(key, cb_function) {
     try {
       keychain[found_key(key)].timer = 0;
+      cb_function("alive");
     } catch (err) {
-      console.log("got timerout check with UNfound key", key);
+      //cb_function(err);
+      console.log("got timeout check with UNfound key", key);
     }
   });
-});
+
+  socket.on('disconnect', function() {
+    try {
+      var i = found_id(socket.id);
+      socket.broadcast.emit('typing', keychain[i].name + " left.");
+      delete keychain[i];
+      server_io.sockets.emit('userlist', userlist_html());
+    } catch (err) {
+      console.log("disconnect id error", socket.id, err);
+    }
+  });
+}); /// end of io connect
 
 
 //////// Generate current datetime string
@@ -132,13 +161,13 @@ var date_time_string = function() {
 
 ///////// chat history handling
 function add_history(new_string) {
-  db_api("push", db_entry+".history", new_string, function(result) {
+  db_api("push", db_entry + ".history", new_string, function(result) {
     console.log("history recorded:", result);
   });
 }
 
 function read_history(num_of_lines, cb_function) {
-  db_api("get",  db_entry+".history", "", function(history) {
+  db_api("get", db_entry + ".history", "", function(history) {
     var start_index = Math.max(history.length - num_of_lines, 0);
     var sub_history;
     console.log("read history", "start_index=", start_index, "length", history.length);
@@ -146,7 +175,7 @@ function read_history(num_of_lines, cb_function) {
     cb_function(sub_history.join(""));
     ////// trim the history if it's too long >100
     if (history.length > 100) {
-      db_api("set",  db_entry+".history", sub_history, function(result) {
+      db_api("set", db_entry + ".history", sub_history, function(result) {
         console.log("history is > 100, trim it to 50, feedback:", result);
       });
     }
@@ -157,12 +186,23 @@ function read_history(num_of_lines, cb_function) {
 function intervalFunc() {
   var i;
   for (i in keychain) {
-    if (++keychain[i].timer === 60) { // timer 6x5s=30s timeout connection
+    if (++keychain[i].timer === 20) { // timer 6x5s=30s timeout connection
       console.log("drop out key:", keychain[i].key);
+      server_io.sockets.emit('typing', keychain[i].name + " dropped out...");
       delete keychain[i];
     }
   }
-  //console.log("current keychain", keychain);
+  ////// emit userlist every 5 sec.
+  server_io.sockets.emit('userlist', userlist_html());
 }
 
 setInterval(intervalFunc, 5000);
+////// userlist handling
+function userlist_html() {
+  var result = "<p><strong>Current Users</strong>",
+    i;
+  for (i in keychain) {
+    result += " / " + keychain[i].name;
+  }
+  return result + "</p>";
+}

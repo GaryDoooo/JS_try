@@ -3,29 +3,43 @@
 const key = client_random_key_gen(); // get the unique random key for this session
 console.log("client key: ", key);
 
-do {
-  var myname = prompt("Hey type your name here: ");
-} while (myname === "");
-
-var socket = io();
+//var socket = io();
 var feedback_timeout = 0;
+var getInput = prompt("Hey type something here: ");
 
-var message = document.getElementById('message'),
-  output = document.getElementById('output'),
-  send = document.getElementById('send'),
-  userlist = document.getElementById('userlist'),
-  feedback = document.getElementById('feedback'),
-  chat_window = document.getElementById('chat-window');
+function set_scene(target, html_file, element_list) {
+  var result;
+  var i;
+  target.setAttribute("w3-include-html", html_file);
+  for (i in element_list) {
+    //result[element_list[i]] = target.getElementById(element_list);
+  }
+  return result;
+}
 
+elements = set_scene(document.getElementById("scene"),
+  "chat_scene.html", ["message", "output", "send", "myname", "feedback", "chat-window"]);
+
+// var message = document.getElementById('message'),
+//   output = document.getElementById('output'),
+//   send = document.getElementById('send'),
+//   myname = document.getElementById('myname'),
+//   feedback = document.getElementById('feedback'),
+//   chat_window = document.getElementById('chat-window');
 
 // Emit events
 // Detect the click event on send key
+// var body=document.getElementById('chat');
+
 send.addEventListener('click', function() {
   if (message.value === "" | myname.value === "") {
     feedback_timeout = 0;
     feedback.innerHTML = "<p> Either Name or Message is missing...</p>";
   } else {
-    socket.emit('chat', key, message.value);
+    socket.emit('chat', {
+      message: message.value,
+      myname: myname.value
+    });
     message.value = "";
   }
 });
@@ -38,7 +52,7 @@ message.addEventListener("keypress", function(event) {
     // Trigger the button element with a click
     send.click();
   } else {
-    socket.emit('typing', key);
+    socket.emit('typing', myname.value);
   }
 });
 
@@ -46,7 +60,7 @@ message.addEventListener("keypress", function(event) {
 
 socket.on('connect', function() {
   console.log("received connection event and send key.");
-  socket.emit('sendkey', key, myname);
+  socket.emit('sendkey', key);
 });
 
 socket.on('history', function(history_html_string) {
@@ -61,13 +75,9 @@ socket.on('chat', function(message_html_string) {
 });
 
 socket.on('typing', function(name_value) {
-  feedback.innerHTML = '<p>' + name_value + '</p>';
+  feedback.innerHTML = '<p>' + name_value + ' is typing...</p>';
   feedback_timeout = 0;
   scroll_to_bottom(chat_window);
-});
-
-socket.on('userlist',function(userlist_html){
-  userlist.innerHTML=userlist_html;
 });
 
 // General functions
@@ -85,21 +95,12 @@ function draw() {
 ////// Timeout connection handling
 ///// setInterval function runs at the background too.
 function intervalFunc() {
-  socket.emit("time_out_check", key,function(result) {
-    if (result !== "alive") {
-      output.innerHTML = "<p> <strong>Connection lost. Try to refresh your browser.</stong></p>";
-    }else {
-      connection_timeout=0;
-    }
-  });
+  socket.emit("time_out_check", key);
   if (++feedback_timeout > 5) {
     feedback.innerHTML = '';
     scroll_to_bottom(chat_window);
     feedback_timeout = 0;
   }
-  if (++connection_timeout > 30){
-    output.innerHTML = "<p> <strong>Connection lost. Try to refresh your browser.</stong></p>";
-  }
 }
-var connection_timeout=0;
+
 setInterval(intervalFunc, 1000);
