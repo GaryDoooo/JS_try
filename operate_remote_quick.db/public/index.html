@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Quick.db interface</title>
+  <script src="libs/socket.io.js"></script>
+  <link href="chatroom.css" rel="stylesheet" />
+</head>
+
+<body>
+
+  <div id="chat">
+    <h2>Remote Quick.db interface (open JS console)</h2>
+    <small>quick.db Cmd: set push add get delete has all subtract startwith<br>
+      local commands: export import</small>
+    <div id="chat-window">
+      <div id="output">
+      </div>
+      <div id="feedback"></div>
+    </div>
+    <input id="myname" type="text" placeholder="Command: set push add get delete has all subtract startwith" />
+    <input id="message" type="text" placeholder="input 1" />
+    <input id="message2" type="text" placeholder="input 2" />
+    <button id="send">Send</button>
+  </div>
+
+  <!-- <script src="/client.js"></script> -->
+  <script src="libs/p5.js"></script>
+  <!-- <script src="gdu_db_api.js"></script> -->
+  <script src="client.p5.js"></script>
+</body>
+
+</html>

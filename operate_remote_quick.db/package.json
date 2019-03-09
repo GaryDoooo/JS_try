@@ -1,5 +1,5 @@
 {
-  "name": "Remote quick.db operation",
+  "name": "Remote_quick.db_operation",
   "version": "2.0.0",
   "description": "Chatroom to add user, password and db history.",
   "main": "index.js",
@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
+    "fs": "0.0.1-security",
     "html": "^1.0.0",
     "http": "0.0.0",
     "path": "^0.12.7",
