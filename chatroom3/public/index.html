@@ -11,16 +11,20 @@
 <body>
 
   <div id="chat">
-    <h2>Chat Room (History will be shown.)</h2>
-    <div id="userlist"></div>
-    <div id="chat-window">
-      <div id="output">
-      </div>
-      <div id="feedback"></div>
-    </div>
-    <!-- <input id="myname" type="text" placeholder="Name (Can't be empty.)" /> -->
-    <input id="message" type="text" placeholder="Message (To send: ENTER key or Send button)" />
-    <button id="send">Send</button>
+    <h2>Chat Room Login Page</h2>
+    <p>Join the chat as a guest or a registered user. The same functions the both types of users can use, except for names.</p>
+    <button id="guest">Join as a Guest</button>
+    <hr><hr>
+    <p>Existing users can join with username and password here.</p>
+    <input id="userid" type="text" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
+    <button id="login">Login</button>
+    <hr><hr>
+    <p>Register a new user here and claim your unique username.</p>
+    <input id="new_userid" type="text" placeholder="New Username" />
+    <input id="new_password1" type="password" placeholder="New Password" />
+    <input id="new_password2" type="password" placeholder="New Password Repeat" />
+    <button id="register">Register</button>
   </div>
 
   <!-- <script src="/client.js"></script> -->

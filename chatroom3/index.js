@@ -74,6 +74,22 @@ function found_id(id) {
   }
 }
 
+function send_to_all(event, message) {
+  var i;
+  for (i in keychain) {
+    keychain[i].socket.emit(event, message);
+  }
+}
+
+function send_to_others(event, mysocket, message) {
+  var i;
+  for (i in keychain) {
+    if (mysocket.id !== keychain[i].id) {
+      keychain[i].socket.emit(event, message);
+    }
+  }
+}
+
 server_io.on('connection', function(socket) {
   console.log(`made socket connection ${socket.id}`, socket.id);
 
@@ -85,17 +101,19 @@ server_io.on('connection', function(socket) {
         cb_function("Duped id.");
       } else {
         if (!username) {
-          username = "TBD";
+          cb_function("no username?");
+        } else {
+          keychain.push({
+            key: key,
+            timer: 0,
+            name: word_filter.clean(username),
+            id: socket.id,
+            socket: socket,
+            stage: 0 // stage 0 is in login screen.
+          }); // init the new connect Object
+          cb_function("success");
+          // console.log("login create keychain", keychain);
         }
-        keychain.push({
-          key: key,
-          timer: 0,
-          name: word_filter.clean(username),
-          id: socket.id,
-          stage: 0 // stage 0 is in login screen.
-        }); // init the new connect Object
-        cb_function("success");
-        console.log("login create keychain",keychain);
       }
     } catch (err) {
       console.log("sendkey event error key", key, err);
@@ -104,17 +122,18 @@ server_io.on('connection', function(socket) {
 
   socket.on('inchat', function(key) {
     try {
-      console.log(keychain);
       var i = found_key(key);
       keychain[i].stage = 1; //stage 1 is in chat screen.
       keychain[i].id = socket.id;
-      socket.broadcast.emit('typing', keychain[i].name + " joined.");
-      server_io.sockets.emit('userlist', userlist_html());
+      keychain[i].socket = socket;
+      send_to_all('typing', keychain[i].name + " joined.");
+      send_to_all('userlist', userlist_html());
       // send back existing history
       read_history(50, function(result) {
         socket.emit('history', result);
         console.log("history sent to new client.", socket.id, "w/key", key);
       });
+      console.log(keychain);
     } catch (err) {
       console.log("inchat err key", key, err);
     }
@@ -127,7 +146,8 @@ server_io.on('connection', function(socket) {
         word_filter.clean(message) + ' <font color="grey"><small>(' +
         date_time_string() + ')</small></font></p>';
 
-      server_io.sockets.emit('chat', new_message_string);
+      //server_io.sockets.emit
+      send_to_all('chat', new_message_string);
       add_history(new_message_string);
     } catch (err) {
       console.log("on chat event", err, "key", key);
@@ -136,7 +156,7 @@ server_io.on('connection', function(socket) {
 
   socket.on('typing', function(key) {
     try {
-      socket.broadcast.emit('typing', keychain[found_key(key)].name + " is typing...");
+      send_to_others('typing', socket, keychain[found_key(key)].name + " is typing...");
     } catch (err) {
       console.log("on typing event", err, "key", key);
     }
@@ -205,7 +225,7 @@ function read_history(num_of_lines, cb_function) {
       cb_function(sub_history.join(""));
       ////// trim the history if it's too long >100
       if (history.length > 100) {
-        db_api("set", db_entry + ".history", sub_history, function(result) {
+        db_api("set", db_entry + ".history", sub_history.length, "entries", function(result) {
           console.log("history is > 100, trim it to 50, feedback:", result);
         });
       }
@@ -221,12 +241,12 @@ function intervalFunc() {
   for (i in keychain) {
     if (++keychain[i].timer === 20) { // timer 6x5s=30s timeout connection
       console.log("drop out key:", keychain[i].key);
-      server_io.sockets.emit('typing', keychain[i].name + " dropped out...");
+      send_to_all('typing', keychain[i].name + " dropped out...");
       delete keychain[i];
     }
   }
   ////// emit userlist every 5 sec.
-  server_io.sockets.emit('userlist', userlist_html());
+  send_to_all('userlist', userlist_html());
 }
 
 setInterval(intervalFunc, 5000);

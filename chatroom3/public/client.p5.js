@@ -25,9 +25,9 @@ var message = document.getElementById('message'),
 // Emit events
 // Detect the click event on send key
 send.addEventListener('click', function() {
-  if (message.value === "" | myname.value === "") {
+  if (message.value === "") {
     feedback_timeout = 0;
-    feedback.innerHTML = "<p> Either Name or Message is missing...</p>";
+    feedback.innerHTML = "<p> Message is missing...</p>";
   } else {
     socket.emit('chat', key, message.value);
     message.value = "";
