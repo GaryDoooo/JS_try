@@ -44,7 +44,7 @@ function db_api(command, input1, input2, cb_function) {
   if (commands.includes(command)) {
     db_socket.emit(prefix + command, input1, input2,
       function(return_data) { //Set callback function got return from server
-        console.log("callback of", command, "result", return_data);
+        //console.log("callback of", command, "result", return_data);
         cb_function(return_data);
       });
   } else {
@@ -74,6 +74,16 @@ function found_id(id) {
   }
 }
 
+function found_name(username) {
+  var i;
+  for (i in keychain) {
+    if (keychain[i].name === username) {
+      return i;
+    }
+  }
+  return "not found";
+}
+
 function send_to_all(event, message) {
   var i;
   for (i in keychain) {
@@ -92,7 +102,7 @@ function send_to_others(event, mysocket, message) {
 
 server_io.on('connection', function(socket) {
   console.log(`made socket connection ${socket.id}`, socket.id);
-
+  //////// Login screen handling /////////
   socket.on('sendkey', function(key, username, cb_function) {
     try {
       console.log("got a key: ", key, "username", username);
@@ -120,6 +130,89 @@ server_io.on('connection', function(socket) {
     }
   });
 
+  socket.on("new_userid", function(username, password, cb_function) {
+    try {
+      db_api("get", "chat_users", "", function(users) {
+        if (users === false) { // Not entry exist, create one
+          db_api("set", "chat_users", {
+            name: username,
+            password: password
+          }, function(set_new_entry_result) {
+            if (set_new_entry_result === false) {
+              cb_function("db server error check the chat server log.");
+              console.log("new user set db error: ", set_new_entry_result);
+            } else {
+              console.log("db set new user seems success", set_new_entry_result);
+              cb_function("success");
+            }
+          });
+        } else {
+          var i;
+          console.log(users);
+          for (i in users) {
+            if (users[i]) {
+              if (users[i].name === username) {
+                cb_function("Duped name.");
+                console.log("found Duped name.");
+                return;
+              }
+            }
+          }
+          db_api("push", "chat_users", {
+            name: username,
+            password: password
+          }, function(set_new_entry_result) {
+            if (set_new_entry_result === false) {
+              cb_function("db server error check the chat server log.");
+              console.log("new user push db error: ", set_new_entry_result);
+            } else {
+              console.log("db push new user seems success", set_new_entry_result);
+              cb_function("success");
+            }
+          });
+        }
+      });
+    } catch (err) {
+      console.log("user login err", err);
+    }
+  });
+
+  socket.on("user_login", function(username, password, cb_function) {
+    try {
+      db_api("get", "chat_users", "", function(users) {
+        if (users === false) { // Not entry exist, create one
+          cb_function("No users found.")
+        } else {
+          var i;
+          console.log(users);
+          for (i in users) {
+            if (users[i]) {
+              if (users[i].name === username) {
+                if (users[i].password === password) {
+                  console.log("match user and password");
+                  var j = found_name(username); //index of keychain user with same name.
+                  console.log("same user",j,"in",keychain);
+                  if (j !== "not found") {
+                    keychain[j].socket.emit('kicked');
+                    delete keychain[j];
+                  }
+                  cb_function("success");
+                } else {
+                  console.log("username right but wrong password", username);
+                  cb_function("wrong password");
+                }
+                return;
+              }
+            }
+          }
+          cb_function("user not found.")
+        }
+      });
+    } catch (err) {
+      console.log("user login err", err);
+    }
+  });
+  //////// Chat screen handling /////////
   socket.on('inchat', function(key) {
     try {
       var i = found_key(key);
@@ -141,10 +234,10 @@ server_io.on('connection', function(socket) {
 
   socket.on('chat', function(key, message) {
     try {
-      var new_message_string = '<p><strong>' +
+      var new_message_string = '<p><font size="3" face="Nunito"><strong>' +
         keychain[found_key(key)].name + ': </strong>' +
         word_filter.clean(message) + ' <font color="grey"><small>(' +
-        date_time_string() + ')</small></font></p>';
+        date_time_string() + ')</small></font></font></p>';
 
       //server_io.sockets.emit
       send_to_all('chat', new_message_string);
@@ -208,7 +301,7 @@ var date_time_string = function() {
 function add_history(new_string) {
   try {
     db_api("push", db_entry + ".history", new_string, function(result) {
-      console.log("history recorded:", result);
+      console.log("history recorded:");//, result);
     });
   } catch (err) {
     console.log("add history error.", err);

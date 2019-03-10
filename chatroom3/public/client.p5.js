@@ -1,14 +1,14 @@
 // Make connection socket
 
 // const key = client_random_key_gen(); // get the unique random key for this session
-var stage=localStorage.getItem("stage");
-if (stage==="login"){
-  localStorage.setItem("stage","chat");
-}else{
-    window.location.href = "index.html";
+var stage = localStorage.getItem("stage");
+if (stage === "login") {
+  localStorage.setItem("stage", "chat");
+} else {
+  window.location.href = "index.html";
 } /////check if it's reload from itself, if so kick back to login screen.
 
-const key =localStorage.getItem("key");
+const key = localStorage.getItem("key");
 console.log("Got client key: ", key);
 
 var socket = io();
@@ -70,8 +70,14 @@ socket.on('typing', function(name_value) {
   scroll_to_bottom(chat_window);
 });
 
-socket.on('userlist',function(userlist_html){
-  userlist.innerHTML=userlist_html;
+socket.on('userlist', function(userlist_html) {
+  userlist.innerHTML = userlist_html;
+});
+
+socket.on('kicked', function() {
+  output.innerHTML = "<p><strong>Same user has logged in from another place." +
+    " This session dropped. If is not done by yourself, please... " +
+    "OK there is no way to change your password so far...</stong></p>";
 });
 
 // General functions
@@ -89,11 +95,11 @@ function draw() {
 ////// Timeout connection handling
 ///// setInterval function runs at the background too.
 function intervalFunc() {
-  socket.emit("time_out_check", key,function(result) {
+  socket.emit("time_out_check", key, function(result) {
     if (result !== "alive") {
       output.innerHTML = "<p> <strong>Connection lost. Try to refresh your browser.</stong></p>";
-    }else {
-      connection_timeout=0;
+    } else {
+      connection_timeout = 0;
     }
   });
   if (++feedback_timeout > 5) {
@@ -101,9 +107,9 @@ function intervalFunc() {
     //scroll_to_bottom(chat_window);
     feedback_timeout = 0;
   }
-  if (++connection_timeout > 30){
+  if (++connection_timeout > 30) {
     output.innerHTML = "<p> <strong>Connection lost. Try to refresh your browser.</stong></p>";
   }
 }
-var connection_timeout=0;
+var connection_timeout = 0;
 setInterval(intervalFunc, 1000);
