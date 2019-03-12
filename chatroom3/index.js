@@ -12,7 +12,7 @@ const socket = require('socket.io'), // socket for serving the chat service
   app = express(),
   server = require('http').Server(app),
   server_io = socket(server), // the io for chat server
-  db_entry = "chatroomdev2";
+  db_entry = "chatroom2";
 
 /////// set the http listen and httpd working directory
 app.set('view engine', 'html')
@@ -131,8 +131,8 @@ server_io.on('connection', function(socket) {
   });
 
   socket.on("new_userid", function(username, password, cb_function) {
-    try {
-      db_api("get", "chat_users", "", function(users) {
+    db_api("get", "chat_users", "", function(users) {
+      try {
         if (users === false) { // Not entry exist, create one
           db_api("set", "chat_users", {
             name: username,
@@ -171,15 +171,15 @@ server_io.on('connection', function(socket) {
             }
           });
         }
-      });
-    } catch (err) {
-      console.log("user login err", err);
-    }
+      } catch (err) {
+        console.log("user login err", err);
+      }
+    });
   });
 
   socket.on("user_login", function(username, password, cb_function) {
-    try {
-      db_api("get", "chat_users", "", function(users) {
+    db_api("get", "chat_users", "", function(users) {
+      try {
         if (users === false) { // Not entry exist, create one
           cb_function("No users found.")
         } else {
@@ -191,7 +191,7 @@ server_io.on('connection', function(socket) {
                 if (users[i].password === password) {
                   console.log("match user and password");
                   var j = found_name(username); //index of keychain user with same name.
-                  console.log("same user",j,"in",keychain);
+                  console.log("same user", j, "in", keychain);
                   if (j !== "not found") {
                     keychain[j].socket.emit('kicked');
                     delete keychain[j];
@@ -207,10 +207,10 @@ server_io.on('connection', function(socket) {
           }
           cb_function("user not found.")
         }
-      });
-    } catch (err) {
-      console.log("user login err", err);
-    }
+      } catch (err) {
+        console.log("user login err", err);
+      }
+    });
   });
   //////// Chat screen handling /////////
   socket.on('inchat', function(key) {
@@ -299,18 +299,18 @@ var date_time_string = function() {
 
 ///////// chat history handling
 function add_history(new_string) {
-  try {
-    db_api("push", db_entry + ".history", new_string, function(result) {
-      console.log("history recorded:");//, result);
-    });
-  } catch (err) {
-    console.log("add history error.", err);
-  }
+  db_api("push", db_entry + ".history", new_string, function(result) {
+    try {
+      console.log("history recorded:"); //, result);
+    } catch (err) {
+      console.log("add history error.", err);
+    }
+  });
 }
 
 function read_history(num_of_lines, cb_function) {
-  try {
-    db_api("get", db_entry + ".history", "", function(history) {
+  db_api("get", db_entry + ".history", "", function(history) {
+    try {
       var start_index = Math.max(history.length - num_of_lines, 0);
       var sub_history;
       console.log("read history", "start_index=", start_index, "length", history.length);
@@ -318,14 +318,14 @@ function read_history(num_of_lines, cb_function) {
       cb_function(sub_history.join(""));
       ////// trim the history if it's too long >100
       if (history.length > 100) {
-        db_api("set", db_entry + ".history", sub_history.length, "entries", function(result) {
+        db_api("set", db_entry + ".history", sub_history, "entries", function(result) {
           console.log("history is > 100, trim it to 50, feedback:", result);
         });
       }
-    });
-  } catch (err) {
-    console.log("read history error.", err);
-  }
+    } catch (err) {
+      console.log("read history error.", err);
+    }
+  });
 }
 
 ////// Timeout connection handling
