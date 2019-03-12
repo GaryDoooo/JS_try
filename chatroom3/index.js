@@ -216,16 +216,18 @@ server_io.on('connection', function(socket) {
   socket.on('inchat', function(key) {
     try {
       var i = found_key(key);
-      keychain[i].stage = 1; //stage 1 is in chat screen.
       keychain[i].id = socket.id;
       keychain[i].socket = socket;
-      send_to_all('typing', keychain[i].name + " joined.");
       send_to_all('userlist', userlist_html());
-      // send back existing history
-      read_history(50, function(result) {
-        socket.emit('history', result);
-        console.log("history sent to new client.", socket.id, "w/key", key);
-      });
+      if (keychain[i].stage === 0) {
+        keychain[i].stage = 1; //stage 1 is in chat screen.
+        send_to_all('typing', keychain[i].name + " joined.");
+        // send back existing history
+        read_history(50, function(result) {
+          socket.emit('history', result);
+          console.log("history sent to new client.", socket.id, "w/key", key);
+        });
+      }
       console.log(keychain);
     } catch (err) {
       console.log("inchat err key", key, err);
