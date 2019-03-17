@@ -1,7 +1,8 @@
 'use strict';
 
 const socket = require('socket.io'), // socket for serving the chat service
-  db_socket = require('socket.io-client')('https://quantum-camp-225421.appspot.com'),
+db_socket = require('socket.io-client')('http://35.185.101.127'),
+  // db_socket = require('socket.io-client')('https://quantum-camp-225421.appspot.com'),
   // client socket to db server
   prefix = (10e15).toString(36),
   commands = ["set", "add", "all", "push", "get", "delete", "has", "subtract", "startswith"],
@@ -321,7 +322,7 @@ function read_history(num_of_lines, cb_function) {
       ////// trim the history if it's too long >100
       if (history.length > 100) {
         db_api("set", db_entry + ".history", sub_history, "entries", function(result) {
-          console.log("history is > 100, trim it to 50, feedback:", result);
+          console.log("history is > 100, trim it to 50.");
         });
       }
     } catch (err) {
@@ -347,8 +348,8 @@ function intervalFunc() {
 setInterval(intervalFunc, 5000);
 ////// userlist handling
 function userlist_html() {
-  var result = "<p><strong>Current Users</strong>",
-    i;
+  var result = "<p><strong>Current Users</strong>";
+  var i;
   for (i in keychain) {
     result += " / " + keychain[i].name;
   }

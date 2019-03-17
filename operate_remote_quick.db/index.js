@@ -1,7 +1,8 @@
 'use strict';
 
 const socket = require('socket.io'), // socket for serving the chat service
-  db_socket = require('socket.io-client')('https://quantum-camp-225421.appspot.com'),
+  //  db_socket = require('socket.io-client')('https://quantum-camp-225421.appspot.com'),
+  db_socket = require('socket.io-client')('http://35.185.101.127'),
   //db_socket = require('socket.io-client')('https://secure-ridge-80588.herokuapp.com'),
   // client socket to db server
   prefix = (10e15).toString(36),
@@ -89,24 +90,24 @@ function write_to_json(filename, data, cb_function) {
 function read_from_json(filename, cb_function) {
   var fs = require('fs');
   var obj, i;
-  fs.readFile(filename, 'utf8', function(err, data) {
-    if (err) {
-      console.error(err);
-      cb_function(err);
-    } else {
-      try {
-        obj = JSON.parse(data);
-        for (i in obj) {
-          db_api("set", obj[i].ID, obj[i].data, function(result) {
-            console.log("set:", result);
-          });
-        }
-        cb_function("Imported data from: " + filename);
-      } catch (err2) {
-        console.error(err2);
-        cb_function(err2);
-      }
+  // fs.readFile(filename, 'utf8', function(err, data) {
+  //   if (err) {
+  //     console.error(err);
+  //     cb_function(err);
+  //   } else {
+  try {
+    obj = require(filename);
+    for (i in obj) {
+      db_api("set", obj[i].ID, obj[i].data, function(result) {
+        console.log("set:", result);
+      });
     }
-  });
+    cb_function("Imported data from: " + filename);
+  } catch (err2) {
+    console.error(err2);
+    cb_function(err2);
+  }
 }
+// });
+// }
 // Content of the file -> {"a":1,"b":2,"c":{"x":11,"y":22}}
