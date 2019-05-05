@@ -14,6 +14,8 @@ console.log("Got client key: ", key);
 var socket = io();
 var feedback_timeout = 0;
 
+const SCREEN_RATIO = 9/16;
+
 // var buttonA = document.getElementById('a'),
 //   buttonB = document.getElementById('b'),
 //   up = document.getElementById('up'),
@@ -87,7 +89,17 @@ var x = 100.0;
 var y = 100;
 var speed = 2.5;
 setup = function() {
-  createCanvas(600, 400);
+  var holder = document.getElementById("sketch-holder");
+  if (windowWidth>windowHeight){
+  var height=windowWidth*SCREEN_RATIO;
+  var width=windowHeight/SCREEN_RATIO;
+  height = Math.min(height,windowHeight);
+  width=Math.min(width,windowWidth);
+  var canvas=createCanvas(width, height);
+  canvas.parent('sketch-holder');
+}else{
+  holder.innerHTML="<h1>Rotate screen to landscape and reload.</h1>";
+}
 };
 
 draw = function() {
