@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chat Room Login</title>
+    <script src="/libs/socket.io.js"></script>
+    <link href="chatroom.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="chat">
+        <h2>Math Sheet Gen</h2>
+        <hr>
+        <table>
+            <tr>
+                <td>
+                    <p>Total number of problems</p>
+                </td>
+                <td>
+                    <input id="problem_num" type="text" value="100" /></td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Max of the first number</p>
+                </td>
+                <td>
+                    <input id="first_num_max" type="text" value="100" /></td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Max of the second number</p>
+                </td>
+                <td>
+                    <input id="second_num_max" type="text" value="100" /></td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Min of the first nubmer</p>
+                </td>
+                <td>
+                    <input id="first_num_min" type="text" value="2" /></td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Min of the second nubmer</p>
+                </td>
+                <td>
+                    <input id="second_num_min" type="text" value="2" /></td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Max of the result</p>
+                </td>
+                <td>
+                    <input id="result_max" type="text" value="10000" /></td>
+            </tr>
+            <hr>
+        </table>
+        <select id="operator" class="select-css">
+            <option value="a">ADDITION</option>
+            <option value="s">SUBSTRACTION</option>
+            <option value="m">MULTIPLICAITON</option>
+            <option value="d">DIVISION</option>
+        </select>
+        <hr>
+        <button id="generate">Generate Math Sheet</button>
+    </div>
+    <!-- <script src="/client.js"></script> -->
+    <!-- <script src="/libs/p5.js"></script> -->
+    <!-- <script src="gdu_keygen.js"></script> -->
+    <script src="login.js"></script>
+</body>
+
+</html>
