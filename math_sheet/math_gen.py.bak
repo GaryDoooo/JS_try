@@ -40,15 +40,15 @@ def dispatch(time_length,
              html_file):
     ###### input validation ########
     if not (0 < time_length <= 1000):
-        print("Expect time within 1 to 1000 minutes. Set time to 10 min.")
+        print "Expect time within 1 to 1000 minutes. Set time to 10 min."
         press_any_key_to_continue()
         time_length = 10
     if not (0 < first_num_max <= 1e8):
-        print("Digits of a number is expected between 1 and 1E8. Set to 100.")
+        print "Digits of a number is expected between 1 and 1E8. Set to 100."
         press_any_key_to_continue()
         first_num_max = 100
     if not (0 < second_num_max <= 1e8):
-        print("Digits of a number is expected between 1 and 1E8. Set to 100.")
+        print "Digits of a number is expected between 1 and 1E8. Set to 100."
         press_any_key_to_continue()
         second_num_max = 100
     if (result_max == 0):
@@ -64,7 +64,7 @@ def dispatch(time_length,
     elif (operator == "d"):
         operator_in_number = 4  # 4 is div
     if not (0 < problem_num <= 200):
-        print("We usually give at least one problem or no more than 200... Set to 10.")
+        print "We usually give at least one problem or no more than 200... Set to 10."
         press_any_key_to_continue()
         problem_num = 10
     if no_one == "on":

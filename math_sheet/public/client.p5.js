@@ -3,113 +3,29 @@
 // const key = client_random_key_gen(); // get the unique random key for this session
 var stage = localStorage.getItem("stage");
 if (stage === "login") {
-  localStorage.setItem("stage", "chat");
+    localStorage.setItem("stage", "chat");
 } else {
-  window.location.href = "index.html";
+    window.location.href = "index.html";
 } /////check if it's reload from itself, if so kick back to login screen.
 
-const key = localStorage.getItem("key");
-console.log("Got client key: ", key);
+var problem_list = localStorage.getItem("problem_list");
+var answer_list = localStorage.getItem("answer_list");
+var current_display = 0;
+console.log("Got result.\n", problem_list, answer_list);
 
-var socket = io();
-var feedback_timeout = 0;
+var output = document.getElementById('output'),
+    swap = document.getElementById('swap');
 
-var message = document.getElementById('message'),
-  output = document.getElementById('output'),
-  send = document.getElementById('send'),
-  userlist = document.getElementById('userlist'),
-  feedback = document.getElementById('feedback'),
-  chat_window = document.getElementById('chat-window');
-
+output.innerHTML = problem_list;
 
 // Emit events
 // Detect the click event on send key
-send.addEventListener('click', function() {
-  if (message.value === "") {
-    feedback_timeout = 0;
-    feedback.innerHTML = "<p> Message is missing...</p>";
-  } else {
-    socket.emit('chat', key, message.value);
-    message.value = "";
-  }
+swap.addEventListener('click', function() {
+    current_display += 1;
+    if (current_display % 2 == 0) {
+        output.innerHTML = problem_list;
+    } else {
+        output.innerHTML = answer_list;
+    }
 });
 // Detect the ENTER key pressed inside the message input box
-message.addEventListener("keypress", function(event) {
-  // Number 13 is the "Enter" key on the keyboard
-  if (event.keyCode === 13) {
-    // Cancel the default action, if needed
-    event.preventDefault();
-    // Trigger the button element with a click
-    send.click();
-  } else {
-    socket.emit('typing', key);
-  }
-});
-
-// listen server data
-
-socket.on('connect', function() {
-  console.log("received connection event and send inchat event.");
-  socket.emit('inchat', key);
-});
-
-socket.on('history', function(history_html_string) {
-  output.innerHTML = history_html_string;
-  scroll_to_bottom(chat_window);
-});
-
-socket.on('chat', function(message_html_string) {
-  feedback.innerHTML = '';
-  output.innerHTML += message_html_string;
-  scroll_to_bottom(chat_window);
-});
-
-socket.on('typing', function(name_value) {
-  feedback.innerHTML = '<p>' + name_value + '</p>';
-  feedback_timeout = 0;
-  scroll_to_bottom(chat_window);
-});
-
-socket.on('userlist', function(userlist_html) {
-  userlist.innerHTML = userlist_html;
-});
-
-socket.on('kicked', function() {
-  output.innerHTML = "<p><strong>Same user has logged in from another place." +
-    " This session dropped. If is not done by yourself, please... " +
-    "OK there is no way to change your password so far...</stong></p>";
-});
-
-// General functions
-function setup() {
-  frameRate(5);
-}
-
-function scroll_to_bottom(element) {
-  element.scrollTop = element.scrollHeight; // Auto scroll to the bottom
-}
-
-function draw() {
-  // DRAW function is only called when it's in the front, by each frame
-}
-////// Timeout connection handling
-///// setInterval function runs at the background too.
-function intervalFunc() {
-  socket.emit("time_out_check", key, function(result) {
-    if (result !== "alive") {
-      output.innerHTML = "<p> <strong>Connection lost. Try to refresh your browser.</stong></p>";
-    } else {
-      connection_timeout = 0;
-    }
-  });
-  if (++feedback_timeout > 5) {
-    feedback.innerHTML = '';
-    //scroll_to_bottom(chat_window);
-    feedback_timeout = 0;
-  }
-  if (++connection_timeout > 30) {
-    output.innerHTML = "<p> <strong>Connection lost. Try to refresh your browser.</stong></p>";
-  }
-}
-var connection_timeout = 0;
-setInterval(intervalFunc, 1000);

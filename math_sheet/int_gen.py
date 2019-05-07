@@ -3,7 +3,10 @@ import random
 
 def two_number_add(
         first_num_max, first_num_min, second_num_max, second_num_min, result_max):
-    while True:
+    result_max = max(result_max, first_num_min + second_num_min)
+    timer = 0
+    while (timer < 10000):
+        timer += 1
         a = random.randint(first_num_min, first_num_max)
         b = random.randint(second_num_min, second_num_max)
         if a + b <= result_max:
@@ -29,7 +32,10 @@ def two_number_sub(
 
 def two_number_mul(
         first_num_max, first_num_min, second_num_max, second_num_min, result_max, no_one=True):
-    while True:
+    result_max = max(result_max, first_num_min * second_num_min)
+    timer = 0
+    while (timer < 10000):
+        timer += 1
         a = random.randint(first_num_min, first_num_max)
         b = random.randint(second_num_min, second_num_max)
         if a != 1 and b != 1 and a * b <= result_max:
@@ -43,8 +49,10 @@ def two_number_mul(
 
 def two_number_div(
         first_num_max, first_num_min, second_num_max, second_num_min, no_one=True):
-    a = random.randint(first_num_min, first_num_max)
-    while True:
+    a = random.randint(first_num_min, first_num_max)        
+    timer = 0
+    while (timer < 10000):
+        timer += 1
         b = random.randint(second_num_min, second_num_max)
         if b != 1:
             break
