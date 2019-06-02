@@ -5,7 +5,6 @@ const socket = require('socket.io'), // socket for serving the chat service
     path = require("path"),
     app = express(),
     server = require('http').Server(app),
-    seedrandom = require('seedrandom'),
     server_io = socket(server); // the io for chat server
 
 /////// set the http listen and httpd working directory
