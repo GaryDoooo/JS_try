@@ -12,7 +12,7 @@
         /* auto is the initial value */
 
         /* this affects the margin in the printer settings */
-        /*margin: 5mm 5mm 5mm 5mm;*/
+        margin: 15mm 5mm 5mm 5mm;
     }
 
     body {
@@ -27,13 +27,34 @@
             display: none !important;
         }
     }
+
+    table {
+        table-layout: auto;
+        border-collapse: collapse;
+        page-break-inside: avoid;
+        width: 100%;
+    }
+
+    table td {
+        border: 0px solid #ccc;
+    }
+
+    table .absorbing-column {
+        width: 100%;
+    }
+
+    /*table { page-break-inside:auto }*/
+    tr {
+        page-break-inside: avoid;
+        /*page-break-after: auto*/
+    }
     </style>
 </head>
 
 <body>
     <div id="output">
     </div>
-    <button id="swap" class='no-print'>Switch problems / answers</button>
+    <button id="swap" class='no-print'>Hide / Unhide Answers</button>
     <!-- <script src="/client.js"></script> -->
     <script src="/libs/p5.js"></script>
     <!-- <script src="gdu_keygen.js"></script> -->

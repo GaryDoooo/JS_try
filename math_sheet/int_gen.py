@@ -49,7 +49,7 @@ def two_number_mul(
 
 def two_number_div(
         first_num_max, first_num_min, second_num_max, second_num_min, no_one=True):
-    a = random.randint(first_num_min, first_num_max)        
+    a = random.randint(first_num_min, first_num_max)
     timer = 0
     while (timer < 10000):
         timer += 1
@@ -80,9 +80,12 @@ def two_number_operation(
         second_num_min=2,
         operator=1,
         problem_num=10,
-        no_one=True):
+        randseed=100,
+        no_one=True
+):
     problem_list = []
     answer_list = []
+    random.seed(randseed)
     for i in range(1, problem_num + 1):
         if operator == 1:
             new_problem, new_answer = two_number_add(

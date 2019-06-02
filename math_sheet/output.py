@@ -82,7 +82,7 @@ class output:
         sp.call('clear', shell=True)
         print('Goodbye!\n\n\n\n\n')
 
-def html_output(problem_list, answer_list):
+def html_output(problem_list, answer_list,prob_per_page=100):
     problem_output =('<style type="text/css">'+
     'table {table-layout: auto;border-collapse: collapse;width: 100%;}'+
     'table td {border: 0px solid #ccc;}table .absorbing-column {'+

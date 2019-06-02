@@ -15,45 +15,48 @@
         <table>
             <tr>
                 <td>
-                    <p>Total number of problems</p>
+                    <p>Total number of problems (<20,000)</p> </td> <td>
+                            <input id="problem_num" type="text" value="100" />
                 </td>
-                <td>
-                    <input id="problem_num" type="text" value="100" /></td>
             </tr>
             <tr>
                 <td>
-                    <p>Max of the first number</p>
+                    <p>Max of the first number (<1000)</p> </td> <td>
+                            <input id="first_num_max" type="text" value="100" />
                 </td>
-                <td>
-                    <input id="first_num_max" type="text" value="100" /></td>
             </tr>
             <tr>
                 <td>
-                    <p>Max of the second number</p>
+                    <p>Max of the second number (<1000)</p> </td> <td>
+                            <input id="second_num_max" type="text" value="100" />
                 </td>
-                <td>
-                    <input id="second_num_max" type="text" value="100" /></td>
             </tr>
             <tr>
                 <td>
-                    <p>Min of the first nubmer</p>
+                    <p>Min of the first nubmer (> -1000)</p>
                 </td>
                 <td>
                     <input id="first_num_min" type="text" value="2" /></td>
             </tr>
             <tr>
                 <td>
-                    <p>Min of the second nubmer</p>
+                    <p>Min of the second nubmer (> -1000)</p>
                 </td>
                 <td>
                     <input id="second_num_min" type="text" value="2" /></td>
             </tr>
             <tr>
                 <td>
-                    <p>Max of the result</p>
+                    <p>Max of the result (<1,000,000)</p> </td> <td>
+                            <input id="result_max" type="text" value="10000" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Problems per page</p>
                 </td>
                 <td>
-                    <input id="result_max" type="text" value="10000" /></td>
+                    <input id="prob_per_page" type="text" value="100" /></td>
             </tr>
             <hr>
         </table>
@@ -65,6 +68,27 @@
         </select>
         <hr>
         <button id="generate">Generate Math Sheet</button>
+        <hr>
+        <table>
+            <tr>Get the answer page back by key. Double check the key is correct.</tr>
+            <tr>
+                <td>
+                    <p>Total number of problems (<20,000)</p> </td> <td>
+                            <input id="problem_num_answer" type="text" value="100" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <p>Answer Key</p>
+                </td>
+                <td>
+                    <input id="page_key" type="text" placeholder="Not Case Sensitive" />
+                </td>
+            </tr>
+            <hr>
+        </table>
+        <hr>
+        <button id="get_answer">Retrieve Answer Sheet</button>
     </div>
     <!-- <script src="/client.js"></script> -->
     <!-- <script src="/libs/p5.js"></script> -->
