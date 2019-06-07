@@ -1,7 +1,8 @@
 # Copyright 2017 Garry Du
 from int_gen import two_number_operation
 import random
-from page_key import string_backto_parameter, parameter_to_string
+from page_key import page_key_compress as encode_key
+from page_key import page_key_decompress as decode_key
 
 
 def html_output(problem_list, answer_list, page_key):
@@ -64,12 +65,12 @@ def dispatch(first_num_max,
                                        operator_in_number,
                                        problem_num
                                        )
-        page_key = parameter_to_string([first_num_min + 1000, first_num_max + 999, second_num_min + 1000,
-                                        second_num_max + 999, result_max, operator_in_number, randseed
-                                        ], max_list)
+        page_key = encode_key([first_num_min + 1000, first_num_max + 999, second_num_min + 1000,
+                               second_num_max + 999, result_max, operator_in_number, randseed
+                               ], max_list)
     else:
         [first_num_min, first_num_max, second_num_min,
-         second_num_max, result_max, operator_in_number, randseed] = string_backto_parameter(page_key, max_list)
+         second_num_max, result_max, operator_in_number, randseed] = decode_key(page_key, max_list)
         first_num_min = first_num_min - 1000
         first_num_max = first_num_max - 999
         second_num_min = second_num_min - 1000

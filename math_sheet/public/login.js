@@ -56,7 +56,10 @@ get_answer.addEventListener('click', function() {
     socket.emit("answer", problem_num, page_key_html.value, function(result) {
         if (result['done'] == true) {
             go_next(result['answer_list'], result['problem_list']);
-        } else { console.log(result['done']); }
+        } else {
+            alert("Answer retrieving error.");
+            console.log(result['done']);
+        }
     });
 });
 
