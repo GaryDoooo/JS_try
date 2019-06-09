@@ -42,6 +42,8 @@ generate.addEventListener('click', function() {
                     problem_output += result['problem_list'];
                     answer_output += result['answer_list'];
                     if (page_count >= total_pages) {
+                        problem_output = replace_keys_to_shorter(problem_output);
+                        answer_output = replace_keys_to_shorter(answer_output);
                         go_next(problem_output, answer_output);
                     }
                 } else { console.log(result['done']); }
@@ -53,15 +55,31 @@ generate.addEventListener('click', function() {
 get_answer.addEventListener('click', function() {
     var problem_num = get_number(problem_num_answer_html.value, 100);
     console.log('clicked get answer.')
-    socket.emit("answer", problem_num, page_key_html.value, function(result) {
+    socket.emit("answer", problem_num, replace_keys_to_longer(page_key_html.value), function(result) {
         if (result['done'] == true) {
-            go_next(result['answer_list'], result['problem_list']);
+            problem_output = replace_keys_to_shorter(result['problem_list']);
+            answer_output = replace_keys_to_shorter(result['answer_list']);
+            go_next(answer_output, problem_output);
         } else {
             alert("Answer retrieving error.");
             console.log(result['done']);
         }
     });
 });
+
+function replace_keys_to_longer(input_string) {
+    result = input_string.replace("#", "5LSA1EU-8IKG0-");
+    result = result.replace("@", "5LS8BJ2-8IKG0-");
+    result = result.replace("$", "4BP42J69Y-TKHGUA-");
+    return result;
+}
+
+function replace_keys_to_shorter(input_string) {
+    result = input_string.replace(/4BP42J69Y-TKHGUA-/gi, "$");
+    result = result.replace(/5LS8BJ2-8IKG0-/gi, "@");
+    result = result.replace(/5LSA1EU-8IKG0-/gi, "#");
+    return result;
+}
 
 function go_next(problem_list, answer_list) {
     localStorage.setItem("problem_list", problem_list);
