@@ -24,7 +24,7 @@ class output:
             problem_length = max(single_line_length(problem), problem_length)
         self.cols_in_table = int(int(columns) / (problem_length + 8))
         if (int(len(problem_list) / self.cols_in_table) > (int(rows) - 4) / 2):
-            print "Too many problems for a small terminal screen... Try less."
+            print("Too many problems for a small terminal screen... Try less.")
             return
         self.current_problem = -1
         self.problem_list = problem_list
