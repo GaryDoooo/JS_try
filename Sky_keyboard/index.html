@@ -1,57 +1,115 @@
-<div class="box" id="box1">
-  <h3>Touch Me!</h3>
-</div>
+<!DOCTYPE html>
 
-<h3 id="statusdiv">Status</h3>
+<!-- touch handling learned from http://www.javascriptkit.com/javatutors/touchevents.shtml -->
 
-<script>
-  window.addEventListener(
-    "load",
-    function() {
-      var box1 = document.getElementById("box1");
-      var statusdiv = document.getElementById("statusdiv");
-      var startx = 0;
-      var dist = 0;
+<html>
+  <style>
+    body {
+      background-image: url("bg.png");
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: 100% 100%;
+    }
+  </style>
+  <link href="div.css" rel="stylesheet" />
+  <head>
+    <title>Sky Keyboard Praticing.</title>
+  </head>
+  <body>
+    <audio id="sound1">
+      <source src="1.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound2">
+      <source src="2.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound3">
+      <source src="3.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound4">
+      <source src="4.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound5">
+      <source src="5.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound6">
+      <source src="6.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound7">
+      <source src="7.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound8">
+      <source src="8.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound9">
+      <source src="9.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound10">
+      <source src="10.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound11">
+      <source src="11.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound12">
+      <source src="12.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound13">
+      <source src="13.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound14">
+      <source src="14.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <audio id="sound15">
+      <source src="15.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <!-- <p align="center"> -->
+    <!--This draws the Keyboard on the webpage -->
+    <!-- <img id="key" src="1.png" />
+      <img id="key2" src="1.png" /> -->
+    <div id="outline">
+      <table width="100%" height="100%">
+        <tbody>
+          <tr height="33.333%">
+            <td id="key1" width="20%"><div id="key"></div></td>
+            <td id="key2" width="20%"><div id="key"></div></td>
+            <td id="key3" width="20%"><div id="key"></div></td>
+            <td id="key4" width="20%"><div id="key"></div></td>
+            <td id="key5" width="20%"><div id="key"></div></td>
+          </tr>
+          <tr height="33.333%">
+            <td id="key6"><div id="key"></div></td>
+            <td id="key7"><div id="key"></div></td>
+            <td id="key8"><div id="key"></div></td>
+            <td id="key9"><div id="key"></div></td>
+            <td id="key10"><div id="key"></div></td>
+          </tr>
+          <tr height="33.333%">
+            <td id="key11"><div id="key"></div></td>
+            <td id="key12"><div id="key"></div></td>
+            <td id="key13"><div id="key"></div></td>
+            <td id="key14"><div id="key"></div></td>
+            <td id="key15"><div id="key"></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- </p> -->
+    </div>
+    <h3 top="50%" id="statusdiv">Status</h3>
+  </body>
 
-      box1.addEventListener(
-        "touchstart",
-        function(e) {
-          var touchobj = e.changedTouches[0]; // reference first touch point (ie: first finger)
-          startx = parseInt(touchobj.clientX); // get x position of touch point relative to left edge of browser
-          statusdiv.innerHTML =
-            "Status: touchstart<br> ClientX: " + startx + "px";
-          e.preventDefault();
-        },
-        false
-      );
-
-      box1.addEventListener(
-        "touchmove",
-        function(e) {
-          var touchobj = e.changedTouches[0]; // reference first touch point for this event
-          var dist = parseInt(touchobj.clientX) - startx;
-          statusdiv.innerHTML =
-            "Status: touchmove<br> Horizontal distance traveled: " +
-            dist +
-            "px";
-          e.preventDefault();
-        },
-        false
-      );
-
-      box1.addEventListener(
-        "touchend",
-        function(e) {
-          var touchobj = e.changedTouches[0]; // reference first touch point for this event
-          statusdiv.innerHTML =
-            "Status: touchend<br> Resting x coordinate: " +
-            touchobj.clientX +
-            "px";
-          e.preventDefault();
-        },
-        false
-      );
-    },
-    false
-  );
-</script>
+  <script src="key_play.js"></script>
+</html>

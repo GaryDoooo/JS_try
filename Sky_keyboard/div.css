@@ -1,0 +1,31 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: auto;
+  font-family: "Nunito";
+}
+
+h3 {
+  font-size: 10px;
+  padding: 0px 0px;
+  color: #575ed8;
+  text-align: center;
+}
+
+#outline {
+  left: 30%;
+  top: 0px;
+  height: 36%;
+  width: 39.5%;
+  position: absolute;
+}
+
+#key {
+  /* border-width: medium;
+  border-color: coral; */
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background: rgba(201, 76, 76, 0.2);
+}
