@@ -1,0 +1,91 @@
+#!/usr/bin/python
+
+# Copyright 2017 Garry Du
+
+import argparse
+import generator
+import output
+from press_any_key import press_any_key_to_continue
+
+
+def convert_on_off_to_bool(input_string):
+    if input_string.upper() == "ON":
+        return True
+    else:
+        return False
+
+
+def dispatch(time_length,
+             problem_num,
+             number_of_digits,
+             enable_mul,
+             enable_div,
+             enable_num_combine,
+             max_answer,
+             email_addr
+             ):
+    ###### input validation ########
+    if not (0 < time_length <= 1000):
+        print "Expect time within 1 to 1000 minutes. Set time to 10 min."
+        press_any_key_to_continue()
+        time_length = 10
+    if not (1 < number_of_digits <= 10):
+        print "Digits of a question is expected between 2 and 10. Set to 3."
+        press_any_key_to_continue()
+        number_of_digits = 3
+    if not (0 < problem_num <= 200):
+        print "We usually give at least one problem or no more than 200... Set to 10."
+        press_any_key_to_continue()
+        problem_num = 10
+    if not 10 <= max_answer <= 100000:
+        press_any_key_to_continue()
+        max_answer = 100
+    enable_num_combine = convert_on_off_to_bool(enable_num_combine)
+    enable_mul = convert_on_off_to_bool(enable_mul)
+    enable_div = convert_on_off_to_bool(enable_div)
+    ##### Generate problems. #####
+    problem_list, answer_list = generator.krypto(
+        problem_num, number_of_digits, enable_mul, enable_div, enable_num_combine, max_answer)
+    # problem and answer should be lists of strings
+
+    ##### Output answer and problems #####
+    output.output(problem_list, answer_list, time_length, email_addr)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--time-length',
+                        default=10,
+                        type=int,
+                        help='How many minutes to finish the problem set. After that an email reminder will be sent.')
+    parser.add_argument('--problem-num',
+                        default=10,
+                        type=int,
+                        help='How many problems. Default is 10.')
+    parser.add_argument('--number-of-digits',
+                        default=3,
+                        type=int,
+                        help='How many digits the problem has, for example 3 digits: 1 + 1 + 1 =3.')
+    parser.add_argument('--enable-mul',
+                        default="on",
+                        type=str,
+                        help='If including multiply. On or off. Default is on.')
+    parser.add_argument('--enable-div',
+                        type=str,
+                        default="on",
+                        help="If including division. On of off; Default is on.")
+    parser.add_argument('--enable-num-combine',
+                        type=str,
+                        default="off",
+                        help='Combine nearby digits into a new number, for example answer of "1 2 3=36" is 12x3=36. Default is off.')
+    parser.add_argument('--max-answer',
+                        type=int,
+                        default=100000,
+                        help='Maximum of allowed answers. Answers will not exceed the limit.')
+    parser.add_argument('--email-addr',
+                        type=str,
+                        default="gdu@gmx.us",
+                        help='The Email address to receive ansers and reminders.')
+    parse_args, unknown = parser.parse_known_args()
+
+    dispatch(**parse_args.__dict__)
